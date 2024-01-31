@@ -7,7 +7,7 @@ routes.use(
   '/',
   (docData = (req, res) => {
     let docData = {
-      documentationURL: 'https://nathanbirch.github.io/nathan-byui-api-docs',
+      documentationURL: 'https://github.com/elmambou/CSE341-LESSON04.git',
     };
     res.send(docData);
   })
