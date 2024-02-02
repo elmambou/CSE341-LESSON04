@@ -16,13 +16,13 @@ content-type: application/json
     "birthday":"06/22/2000"
 }
 ### PUT contact
-PUT http://localhost:8080/contacts/65b3a649d71ac9433a3f58eb HTTP/1.1
+PUT http://localhost:8080/contacts/65bd06517610d227732fb0aa HTTP/1.1
 content-type: application/json
 
 {
     "firstName": "Sarah",
-    "lastName": "Maggie",
-    "email": "incredibleperson@byui.edu",
+    "lastName": "Giscard",
+    "email": "funnypeople@byui.edu",
     "favoriteColor": "red ",
     "birthday": "12/12/20"
 }
@@ -38,7 +38,7 @@ GET https://lesson04-cse341.onrender.com/contacts HTTP/1.1
 
 
 ### Get contact by id
-GET https://lesson04-cse341.onrender.com/contacts/65bcad4dc0b54363aff484d0
+GET https://lesson04-cse341.onrender.com/contacts/65bcad3ac0b54363aff484cd
 
 
 ### Create contact
@@ -67,5 +67,5 @@ content-type: application/json
 
 
 ### DELETE contact
-DELETE https://lesson04-cse341.onrender.com/contacts/65b3a649d71ac9433a3f58eb  HTTP/1.1
+DELETE https://lesson04-cse341.onrender.com/contacts/65bd06517610d227732fb0aa  HTTP/1.1
 
