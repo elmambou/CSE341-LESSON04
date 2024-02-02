@@ -12,9 +12,7 @@ const contactRoutes = require('./routes/contacts');
 
 
 // Enable CORS
-app
-  .use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-  .use(cors());
+app.use(cors());
 
 // Parse JSON bodies
 app.use(bodyParser.json())

@@ -3,7 +3,7 @@
 GET http://localhost:8080/contacts HTTP/1.1
 
 ### Get contact by id
-GET http://localhost:8080/contacts/65bca96acb32ee9d373b8de8
+GET http://localhost:8080/contacts/65bcad3ac0b54363aff484cd
 
 ### Create contact
 POST http://localhost:8080/contacts HTTP/1.1
