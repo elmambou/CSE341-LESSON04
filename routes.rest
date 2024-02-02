@@ -3,25 +3,27 @@
 GET http://localhost:8080/contacts HTTP/1.1
 
 ### Get contact by id
-GET http://localhost:8080/contacts/65bcacf1c0b54363aff484cc
+GET http://localhost:8080/contacts/65bd06517610d227732fb0aa
 
 ### Create contact
 POST http://localhost:8080/contacts HTTP/1.1
 content-type: application/json
+
 {
-    "firstName":"James",
+    "firstName":"Ashley",
     "lastName":"Weaver",
-    "email":"jamesWeaver@test.com",
+    "email":"aWeaver@test.com",
     "favoriteColor":"Brown",
-    "birthday":"06/22/2000"
+    "birthday":"06/19/2000"
 }
+
 ### PUT contact
 PUT http://localhost:8080/contacts/65bd06517610d227732fb0aa HTTP/1.1
 content-type: application/json
 
 {
     "firstName": "Sarah",
-    "lastName": "Giscard",
+    "lastName": "Giscard MMM",
     "email": "funnypeople@byui.edu",
     "favoriteColor": "red ",
     "birthday": "12/12/20"
@@ -47,19 +49,19 @@ content-type: application/json
 
 {
     "firstName":"Ashley",
-    "lastName":"Weaver",
+    "lastName":"Domingo",
     "email":"aWeaver@test.com",
     "favoriteColor":"Brown",
     "birthday":"06/19/2000"
 }
 
 ### PUT contact
-PUT https://lesson04-cse341.onrender.com/contacts/65bcacf1c0b54363aff484cc HTTP/1.1
+PUT https://lesson04-cse341.onrender.com/contacts/65bd06517610d227732fb0aa HTTP/1.1
 content-type: application/json
 
 {
       "firstName": "Charlatan",
-      "lastName": "Moonlight",
+      "lastName": "Measure",
       "email": "cmoonlight.com",
       "favoriteColor": "red",
       "birthday": "07/08/2003"
