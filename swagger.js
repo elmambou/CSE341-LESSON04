@@ -5,7 +5,7 @@ const doc = {
     title: 'My API',
     description: 'Contact API'
   },
-  host: 'localhost:8080', 
+  host: 'localhost:3000', 
   schemes: ['http'],      // Add a comma here
 };
 
