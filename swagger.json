@@ -5,10 +5,10 @@
     "description": "Contact API",
     "version": "1.0.0"
   },
-  "host": "lesson04-cse341.onrender.com",
+  "host": "localhost: 8083",
   "basePath": "/",
   "schemes": [
-    "https"
+    "http"
   ],
   "paths": {
     "/api-docs": {

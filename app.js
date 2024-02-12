@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongodb = require('./db/connect');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8083;
 const app = express();
 
 const contactRoutes = require('./routes/contacts');
@@ -22,18 +22,21 @@ app.use(bodyParser.json())
      'Origin, X-Requested-With, Content-Type, Accept, Z-Key');
     // res.setHeader('Content-Type', 'application/json');
     // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
- next();
-})
+    next();
+    })
+    
+    .use('/', require('./routes'))
+    .use('/contacts', contactRoutes);
+
+process.on('uncaughtException', (err, origin) => {
+  console.log(process.stderr.fd, `Caught exception: ${err}\n` + `Exception origin: ${origin}`);
+});
 
 
-
-// Routes
 mongodb.initDb()
     .then(() => {
         app.locals.db = mongodb.getDb();
 
-        app.use('/', require('./routes'));
-        app.use('/contacts', contactRoutes);
 
         app.listen(port, () => {
             console.log(`Connected to DB and listening on ${port}`);

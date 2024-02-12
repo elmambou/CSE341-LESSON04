@@ -7,9 +7,11 @@ const getAll = async (req, res) => {
     const result = await db.collection('contacts').find().toArray();
     res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(response.error || 'Some error occurred while retrieving all contacts.');
   }
 };
+
+
 
 const getSingle = async (req, res) => {
   try {
@@ -18,7 +20,7 @@ const getSingle = async (req, res) => {
     const result = await db.collection('contacts').findOne({ _id: userId });
     res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(response.error || 'Some error occurred while retrieving a single contact.');
   }
 };
 
@@ -35,7 +37,7 @@ const createContact = async (req, res) => {
     const response = await db.collection('contacts').insertOne(contact);
     res.status(201).json(response.ops[0]); // Return the created contact
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json(response.error || 'Some error occurred while creating the contact.');
   }
 };
 
@@ -57,7 +59,7 @@ const updateContact = async (req, res) => {
         throw new Error('Some error occurred while updating the contact.');
       }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json(response.error || 'Some error occurred while updating the contact.');
     }
   };
   
@@ -72,7 +74,7 @@ const updateContact = async (req, res) => {
         throw new Error('Some error occurred while deleting the contact.');
       }
     } catch (error) {
-      res.status(500).json({ error: error.message });
+      res.status(500).json(response.error || 'Some error occurred while deleting the contact.');
     }
   };
   
