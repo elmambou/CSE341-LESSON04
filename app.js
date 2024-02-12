@@ -39,7 +39,7 @@ mongodb.initDb()
             console.log(`Connected to DB and listening on ${port}`);
             console.log(`http://localhost:${port}/contacts`);
             console.log(`http://localhost:${port}/api-docs`);
-            console.log(`https://lesson04-cse341.onrender.com/api-docs`);
+          
         });
     })
     .catch((err) => {
