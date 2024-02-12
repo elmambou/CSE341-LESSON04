@@ -28,7 +28,8 @@
     "mongodb": "^6.3.0",
     "mongoose": "^8.1.1",
     "swagger-ui-dist": "^5.11.2",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "validatorjs": "^3.22.1"
   },
   "devDependencies": {
     "eslint": "^8.56.0",
