@@ -5,7 +5,7 @@ module.exports = (mongoose) => {
         {
           firstName: String,
           lastName: String,
-          email: email,
+          email: String,
           favoriteColor: String, 
           birthday: String,
         },
