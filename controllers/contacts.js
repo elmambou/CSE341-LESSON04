@@ -28,21 +28,31 @@ const getSingle = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  try {
-    const db = mongodb.getDb(); // Get the database object once
-    const contact = { 
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        favoriteColor: req.body.favoriteColor,
-        birthday: req.body.birthday
-     };
-    const response = await db.collection('contacts').insertOne(contact);
-    res.status(201).json(response.ops[0]); // Return the created contact
-  } catch (error) {
+  const contact = {
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    favoriteColor: req.body.favoriteColor,
+    birthday: req.body.birthday
+  };
+  const response = await mongodb.getDb().db().collection('contacts').insertOne(contact);
+  if (response.acknowledged) {
+    res.status(201).json(response);
+  } else {
     res.status(500).json(response.error || 'Some error occurred while creating the contact.');
   }
-};
+}; 
+ 
+ 
+  //   const response = await db.collection('contacts').insertOne(contact);
+ //   res.status(201).json(response.ops[0]); // Return the created contact
+ // } catch (error) {
+   // res.status(500).json(response.error || 'Some error occurred while creating the contact.');
+ // }
+//};
+
+
+
 
 const updateContact = async (req, res) => {
     if (!ObjectId.isValid(req.params.id)) {
