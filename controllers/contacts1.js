@@ -81,15 +81,8 @@ const updateContact = async (req, res) => {
         res.status(400).json('Must use a valid contact id to delete a contact.');
       }
     try {
-        const db = mongodb.getDb(); // Get the database object once
-        const userId = new ObjectId(req.params.id);
-        const contact = {
-          firstName: req.body.firstName,
-          lastName: req.body.lastName,
-          email: req.body.email,
-          favoriteColor: req.body.favoriteColor,
-          birthday: req.body.birthday
-        };
+      const db = mongodb.getDb(); // Get the database object once
+      const userId = new ObjectId(req.params.id);
       const response = await db.collection('contacts').deleteOne({ _id: userId });
       if (response.deletedCount > 0) {
         res.status(204).send();
