@@ -9,12 +9,12 @@ const contactsController = require('../controllers/contacts');
 
 router.get('/', contactsController.getAll);
 
-router.get('/:id', contactsController.getSingle);
+router.get('/:id', security.checkLogin, contactsController.getSingle);
 
 router.post('/', security.checkLogin, contactsController.createContact);
 
 router.put('/:id', security.checkLogin, contactsController.updateContact);
 
-router.delete('/:id', contactsController.deleteContact);
+router.delete('/:id', security.checkLogin, contactsController.deleteContact);
 
 module.exports = router;
