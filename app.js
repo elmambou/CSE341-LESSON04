@@ -15,7 +15,7 @@ const app = express();
 // Example usage of ObjectId
 app.get('/contacts/:id', (req, res) => {
   const id = req.params.id;
-  const ObjectId = new ObjectId(id);
+  const objectId = new ObjectId(id);
   // Now you can use objectId to perform operations with MongoDB
   // For example, querying a document by its ID
   // Example: db.collection('contacts').findOne({ _id: objectId });
