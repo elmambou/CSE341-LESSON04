@@ -22,7 +22,7 @@ const Contact = require('./models/contacts')
   });
   
   // Define Root Query
-const RootQuery = new GraphQLObjectType({
+  const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
       contact: {
@@ -37,16 +37,16 @@ const RootQuery = new GraphQLObjectType({
       },
       contacts: {
         type: new GraphQLList(ContactType),
-        resolve(parent, args, context) {
-          // Logic to retrieve all contacts from MongoDB using Mongoose
-          return context.db.collection('contacts').find().toArray(); // Example assuming 'contacts' is your MongoDB collection
+        resolve(parent, args) {
+          // Your logic to retrieve all contacts
+          // This could be querying from MongoDB using Mongoose
         }
       }
     }
   });
-   
+  
   // Define Mutations
-   const Mutation = new GraphQLObjectType({
+  const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
       addContact: {

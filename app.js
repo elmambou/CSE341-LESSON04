@@ -7,6 +7,7 @@ const mongodb = require('./db/connect');
 const { graphqlHTTP } = require('express-graphql'); // Corrected import statement
 const schema = require('./schema');
 
+
 const port = process.env.PORT || 8083;
 const app = express();
 
@@ -14,13 +15,12 @@ const app = express();
 
 //This route will be used as an endpoint to interact with Graphql, 
 //All queries will go through this route. 
-app.use('/graphql', graphqlHTTP({
-    //directing express-graphql to use this schema to map out the graph 
-    schema,
-    //directing express-graphql to use graphiql when goto '/graphql' address in the browser
-    //which provides an interface to make GraphQl queries
-    graphiql:true
-}));
+app.use('/graphql', graphqlHTTP((req) => ({
+  schema,
+  graphiql: true,
+  context: { db: app.locals.db }, // Pass the MongoDB connection to the context
+})));
+
 
 //End of GraphQL
 
