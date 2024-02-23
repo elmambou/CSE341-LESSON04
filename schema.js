@@ -5,7 +5,10 @@ const {
     GraphQLSchema,
     GraphQLNonNull
   } = require('graphql');
-  
+
+const Contact = require('./models/contacts')
+
+
   // Define Contact type
   const ContactType = new GraphQLObjectType({
     name: 'Contact',
