@@ -5,11 +5,24 @@ const mongodb = require('./db/connect');
 
 //graphQL
 const { graphqlHTTP } = require('express-graphql'); // Corrected import statement
+const { ObjectId } = require('mongodb'); //Import ObjectId
 const schema = require('./schema');
 
 
 const port = process.env.PORT || 8083;
 const app = express();
+
+// Example usage of ObjectId
+app.get('/contacts/:id', (req, res) => {
+  const id = req.params.id;
+  const ObjectId = new ObjectId(id);
+  // Now you can use objectId to perform operations with MongoDB
+  // For example, querying a document by its ID
+  // Example: db.collection('contacts').findOne({ _id: objectId });
+  res.send('Contact ID: ' + id);
+});
+
+//End of ObjectId usage
 
 
 
@@ -24,11 +37,7 @@ app.use('/graphql', graphqlHTTP((req) => ({
 
 //End of GraphQL
 
-
-
-
 const contactRoutes = require('./routes/contacts');
-
 const { auth, requiresAuth } = require('express-openid-connect');
 //Update .env file with render link before pushing
 const config = {
@@ -55,13 +64,10 @@ app.get('/', (req, res) => {
 // })
 
 app.get('/profile', requiresAuth(), (req, res) => {
-  console.log(JSON.stringify(req.oidc.user))
-  res.send(JSON.stringify(req.oidc.user));
-}) 
+ // console.log(JSON.stringify(req.oidc.user))
+    res.send(JSON.stringify(req.oidc.user));
+}); 
 //End OAuth
-
-
-
 
 // Enable CORS
 app.use(cors());
