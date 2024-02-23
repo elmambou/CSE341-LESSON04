@@ -18,3 +18,4 @@ router.put('/:id', security.checkLogin, contactsController.updateContact);
 router.delete('/:id', security.checkLogin, contactsController.deleteContact);
 
 module.exports = router;
+
