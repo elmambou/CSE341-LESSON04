@@ -66,7 +66,7 @@ const Mutation = new GraphQLObjectType({
         updateContact: {
             type: ContactType,
             args: {
-                id: { type: new GraphQLNonNull(GraphQLString) },
+                _id: { type: new GraphQLNonNull(GraphQLString) },
                 firstName: { type: GraphQLString },
                 lastName: { type: GraphQLString },
                 email: { type: GraphQLString },
