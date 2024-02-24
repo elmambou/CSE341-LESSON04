@@ -73,7 +73,7 @@ const Mutation = new GraphQLObjectType({
                 favoriteColor: { type: GraphQLString },
                 birthday: { type: GraphQLString }
             },
-            resolve(parent, args, context) {
+            resolve(parent, args) {
                 // Logic to update a contact in the database
                 const { _id, ...updateData } = args;
                 return context.db.collection('contacts').findOneAndUpdate(
