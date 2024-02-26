@@ -6,6 +6,8 @@ const {
     GraphQLNonNull
 } = require('graphql');
 
+const { ObjectId } = require('mongodb'); // Add this line to import ObjectId from MongoDB
+
 const Contact = require('./models/contacts');
 
 // Define Contact type
@@ -88,10 +90,6 @@ const Mutation = new GraphQLObjectType({
                     throw new Error('Failed to update contact');
                 });
             }
-
-
-
-            
         },
         deleteContact: {
             type: ContactType,
@@ -100,7 +98,11 @@ const Mutation = new GraphQLObjectType({
             },
             resolve(parent, args, context) {
                 // Logic to delete a contact from the database
-                return context.db.collection('contacts').findOneAndDelete({ _id: ObjectId(args._id) }).then(result => result.value);
+                return context.db.collection('contacts').findOneAndDelete({ _id: ObjectId(args._id) })
+                    .then(result => result.value)
+                    .catch(err => {
+                        throw new Error('Failed to delete contact');
+                    });
             }
         }
     }
