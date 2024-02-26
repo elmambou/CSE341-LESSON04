@@ -3,22 +3,24 @@ const {
     GraphQLString,
     GraphQLList,
     GraphQLSchema,
-    GraphQLNonNull
+    GraphQLNonNull,
+    GraphQLInputObjectType,
+    GraphQLID
   } = require('graphql');
 
-  const { ObjectId } = require('mongodb'); // Import ObjectId from MongoDB package
-  const Contact = require('./models/contacts')
+const { ObjectId } = require('mongodb'); // Import ObjectId from MongoDB package
+const Contact = require('./models/contacts'); // Adjust the import path as per your project structure
 
 // Define Contact type
 const ContactType = new GraphQLObjectType({
     name: 'Contact',
     fields: () => ({
-        _id: { type: GraphQLString }, // Add _id field
-        firstName: { type: GraphQLString },
-        lastName: { type: GraphQLString },
-        email: { type: GraphQLString },
-        favoriteColor: { type: GraphQLString },
-        birthday: { type: GraphQLString }
+        _id: { type: new GraphQLNonNull(GraphQLString) },
+        firstName: { type: new GraphQLNonNull(GraphQLString) },
+        lastName: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
+        birthday: { type: new GraphQLNonNull(GraphQLString) }
     })
 });
 
@@ -26,21 +28,29 @@ const ContactType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        contacts: {
+            type: new GraphQLList(ContactType),
+            resolve: async (_, args, context) => {
+                try {
+                    // Logic to retrieve all contacts from MongoDB
+                    return await Contact.find();
+                } catch (err) {
+                    throw new Error(err.message);
+                }
+            }
+        },
         contact: {
             type: ContactType,
             args: {
-                firstName: { type: GraphQLString }
+                id: { type: new GraphQLNonNull(GraphQLString) }
             },
-            resolve(parent, args) {
-                // Your logic to retrieve a single contact by firstName
-                // This could be querying from MongoDB using Mongoose
-            }
-        },
-        contacts: {
-            type: new GraphQLList(ContactType),
-            resolve(parent, args) {
-                // Logic to retrieve all contacts from MongoDB using Mongoose
-                return context.db.collection('contacts').find().toArray(); // Example assuming 'contacts' is your MongoDB collection
+            resolve: async (_, args, context) => {
+                try {
+                    // Logic to retrieve a single contact by ID from MongoDB
+                    return await Contact.findById(args.id);
+                } catch (err) {
+                    throw new Error(err.message);
+                }
             }
         }
     }
@@ -53,46 +63,49 @@ const Mutation = new GraphQLObjectType({
         addContact: {
             type: ContactType,
             args: {
-                firstName: { type: new GraphQLNonNull(GraphQLString) },
-                lastName: { type: new GraphQLNonNull(GraphQLString) },
-                email: { type:new GraphQLNonNull(GraphQLString) },
-                favoriteColor: { type:new GraphQLNonNull(GraphQLString) },
-                birthday: { type:new GraphQLNonNull(GraphQLString) }
+                input: { type: new GraphQLNonNull(ContactInputType) }
             },
-            resolve(parent, args) {
-                // Your logic to add a new contact to the database
-                // This could involve creating a new document in MongoDB using Mongoose
+            resolve: async (_, { input }, context) => {
+                try {
+                    // Logic to add a new contact to the database
+                    return await Contact.create(input);
+                } catch (err) {
+                    throw new Error(err.message);
+                }
             }
         },
         updateContact: {
             type: ContactType,
             args: {
-                _id: { type: new GraphQLNonNull(GraphQLString) },
-                firstName: { type: GraphQLString },
-                lastName: { type: GraphQLString },
-                email: { type: GraphQLString },
-                favoriteColor: { type: GraphQLString },
-                birthday: { type: GraphQLString }
+                input: { type: new GraphQLNonNull(ContactInputType) }
             },
-            resolve(parent, args, context) {
-                const { db } = context;
-                const { _id, ...updateFields } = args;
-
-                // Convert the _id argument to ObjectId
-                const objectId = new ObjectId(_id);
-
-                return db.collection('contacts').updateOne(
-                    { _id: objectId },
-                    { $set: updateFields }
-                ).then(() => {
-                    // Return the updated contact
-                    return db.collection('contacts').findOne({ _id: objectId });
-                }).catch(err => {
-                    throw new Error('Failed to update contact');
-                });
+            resolve: async (_, { input }, context) => {
+                try {
+                    const { _id, ...updateFields } = input;
+                    // Convert the _id argument to ObjectId
+                    const objectId = new ObjectId(_id);
+                    // Logic to update an existing contact in the database
+                    await Contact.updateOne({ _id: objectId }, { $set: updateFields });
+                    return await Contact.findById(objectId);
+                } catch (err) {
+                    throw new Error(err.message);
+                }
             }
         }
     }
+});
+
+// Define Contact input type
+const ContactInputType = new GraphQLInputObjectType({
+    name: 'ContactInput',
+    fields: () => ({
+        _id: { type: new GraphQLNonNull(GraphQLString) },
+        firstName: { type: new GraphQLNonNull(GraphQLString) },
+        lastName: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
+        birthday: { type: new GraphQLNonNull(GraphQLString) }
+    })
 });
 
 module.exports = new GraphQLSchema({
