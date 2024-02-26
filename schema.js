@@ -65,12 +65,12 @@ const Mutation = new GraphQLObjectType({
         updateContact: {
             type: ContactType,
             args: {
-                _id: { type: new GraphQLNonNull(GraphQLString) },
-                firstName: { type: new GraphQLNonNull(GraphQLString) },
-                lastName: { type: new GraphQLNonNull(GraphQLString) },
-                email: { type: new GraphQLNonNull(GraphQLString) },
-                favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
-                birthday: { type: new GraphQLNonNull(GraphQLString) }
+                id: { type: new GraphQLNonNull(GraphQLString) }, // Pass the id of the contact to be updated
+                firstName: { type: GraphQLString }, // All fields are optional, only provide those that need to be updated
+                lastName: { type: GraphQLString },
+                email: { type: GraphQLString },
+                favoriteColor: { type: GraphQLString },
+                birthday: { type: GraphQLString }
             },
             resolve(parent, args, context) {
                 // Your logic to update an existing contact in the database
