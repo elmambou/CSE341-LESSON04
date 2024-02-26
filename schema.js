@@ -12,15 +12,14 @@ const Contact = require('./models/contacts');
 const ContactType = new GraphQLObjectType({
     name: 'Contact',
     fields: () => ({
-        _id: { type: new GraphQLNonNull(GraphQLString) },
-        firstName: { type: new GraphQLNonNull(GraphQLString) },
-        lastName: { type: new GraphQLNonNull(GraphQLString) },
-        email: { type: new GraphQLNonNull(GraphQLString) },
-        favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
-        birthday: { type: new GraphQLNonNull(GraphQLString) }
+        _id: { type: GraphQLString },
+        firstName: { type: GraphQLString },
+        lastName: { type: GraphQLString },
+        email: { type: GraphQLString },
+        favoriteColor: { type: GraphQLString },
+        birthday: { type: GraphQLString }
     })
 });
-
 // Define Root Query
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
