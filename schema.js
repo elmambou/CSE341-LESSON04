@@ -4,15 +4,15 @@ const {
     GraphQLList,
     GraphQLSchema,
     GraphQLNonNull
-} = require('graphql');
+  } = require('graphql');
 
-const Contact = require('./models/contacts');
+const Contact = require('./models/contacts')
 
 // Define Contact type
 const ContactType = new GraphQLObjectType({
     name: 'Contact',
     fields: () => ({
-        _id: { type: GraphQLString },
+        _id: { type: GraphQLString }, // Add _id field
         firstName: { type: GraphQLString },
         lastName: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -20,6 +20,7 @@ const ContactType = new GraphQLObjectType({
         birthday: { type: GraphQLString }
     })
 });
+
 // Define Root Query
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
@@ -29,16 +30,16 @@ const RootQuery = new GraphQLObjectType({
             args: {
                 firstName: { type: GraphQLString }
             },
-            resolve(parent, args, context) {
-                // Logic to retrieve a single contact by firstName
-                return context.db.collection('contacts').findOne({ firstName: args.firstName });
+            resolve(parent, args) {
+                // Your logic to retrieve a single contact by firstName
+                // This could be querying from MongoDB using Mongoose
             }
         },
         contacts: {
             type: new GraphQLList(ContactType),
             resolve(parent, args, context) {
-                // Logic to retrieve all contacts from MongoDB
-                return context.db.collection('contacts').find().toArray();
+                // Logic to retrieve all contacts from MongoDB using Mongoose
+                return context.db.collection('contacts').find().toArray(); // Example assuming 'contacts' is your MongoDB collection
             }
         }
     }
@@ -53,16 +54,16 @@ const Mutation = new GraphQLObjectType({
             args: {
                 firstName: { type: new GraphQLNonNull(GraphQLString) },
                 lastName: { type: new GraphQLNonNull(GraphQLString) },
-                email: { type: new GraphQLNonNull(GraphQLString) },
-                favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
-                birthday: { type: new GraphQLNonNull(GraphQLString) }
+                email: { type:new GraphQLNonNull(GraphQLString) },
+                favoriteColor: { type:new GraphQLNonNull(GraphQLString) },
+                birthday: { type:new GraphQLNonNull(GraphQLString) }
             },
-            resolve(parent, args, context) {
-                // Logic to add a new contact to the database
-                return context.db.collection('contacts').insertOne(args).then(result => result.ops[0]);
+            resolve(parent, args) {
+                // Your logic to add a new contact to the database
+                // This could involve creating a new document in MongoDB using Mongoose
             }
         },
-        updateContact: {
+        updateContact: { // Add the updateContact mutation
             type: ContactType,
             args: {
                 id: { type: new GraphQLNonNull(GraphQLString) }, // Pass the id of the contact to be updated
@@ -72,34 +73,9 @@ const Mutation = new GraphQLObjectType({
                 favoriteColor: { type: GraphQLString },
                 birthday: { type: GraphQLString }
             },
-            resolve(parent, args, context) {
+            resolve(parent, args) {
                 // Your logic to update an existing contact in the database
-                // Use ObjectId for the id field
-                const { db } = context;
-                const { _id, ...updateFields } = args;
-                return db.collection('contacts').updateOne(
-                    { _id: ObjectId(_id) },
-                    { $set: updateFields }
-                ).then(() => {
-                    // Return the updated contact
-                    return db.collection('contacts').findOne({ _id: ObjectId(_id) });
-                }).catch(err => {
-                    throw new Error('Failed to update contact');
-                });
-            }
-
-
-
-            
-        },
-        deleteContact: {
-            type: ContactType,
-            args: {
-                _id: { type: new GraphQLNonNull(GraphQLString) }
-            },
-            resolve(parent, args, context) {
-                // Logic to delete a contact from the database
-                return context.db.collection('contacts').findOneAndDelete({ _id: ObjectId(args._id) }).then(result => result.value);
+                // This could involve updating a document in MongoDB using Mongoose
             }
         }
     }
