@@ -6,7 +6,8 @@ const {
     GraphQLNonNull
   } = require('graphql');
 
-const Contact = require('./models/contacts')
+  const { ObjectId } = require('mongodb'); // Import ObjectId from MongoDB package
+  const Contact = require('./models/contacts')
 
 // Define Contact type
 const ContactType = new GraphQLObjectType({
@@ -37,7 +38,7 @@ const RootQuery = new GraphQLObjectType({
         },
         contacts: {
             type: new GraphQLList(ContactType),
-            resolve(parent, args, context) {
+            resolve(parent, args) {
                 // Logic to retrieve all contacts from MongoDB using Mongoose
                 return context.db.collection('contacts').find().toArray(); // Example assuming 'contacts' is your MongoDB collection
             }
@@ -63,19 +64,30 @@ const Mutation = new GraphQLObjectType({
                 // This could involve creating a new document in MongoDB using Mongoose
             }
         },
-        updateContact: { // Add the updateContact mutation
+        updateContact: {
             type: ContactType,
             args: {
-                id: { type: new GraphQLNonNull(GraphQLString) }, // Pass the id of the contact to be updated
-                firstName: { type: GraphQLString }, // All fields are optional, only provide those that need to be updated
+                _id: { type: new GraphQLNonNull(GraphQLString) },
+                firstName: { type: GraphQLString },
                 lastName: { type: GraphQLString },
                 email: { type: GraphQLString },
                 favoriteColor: { type: GraphQLString },
                 birthday: { type: GraphQLString }
             },
-            resolve(parent, args) {
+            resolve(parent, args, context) {
                 // Your logic to update an existing contact in the database
-                // This could involve updating a document in MongoDB using Mongoose
+                // Use ObjectId for the id field
+                const { db } = context;
+                const { _id, ...updateFields } = args;
+                return db.collection('contacts').updateOne(
+                    { _id: ObjectId(_id) },
+                    { $set: updateFields }
+                ).then(() => {
+                    // Return the updated contact
+                    return db.collection('contacts').findOne({ _id: ObjectId(_id) });
+                }).catch(err => {
+                    throw new Error('Failed to update contact');
+                });
             }
         }
     }
