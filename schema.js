@@ -4,16 +4,15 @@ const {
     GraphQLList,
     GraphQLSchema,
     GraphQLNonNull
-  } = require('graphql');
+} = require('graphql');
 
-  const { ObjectId } = require('mongodb'); // Import ObjectId from MongoDB package
-  const Contact = require('./models/contacts')
+const Contact = require('./models/contacts');
 
 // Define Contact type
 const ContactType = new GraphQLObjectType({
     name: 'Contact',
     fields: () => ({
-        _id: { type: GraphQLString }, // Add _id field
+        _id: { type: GraphQLString },
         firstName: { type: GraphQLString },
         lastName: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -32,15 +31,15 @@ const RootQuery = new GraphQLObjectType({
                 firstName: { type: GraphQLString }
             },
             resolve(parent, args, context) {
-                // Your logic to retrieve a single contact by firstName
-                // This could be querying from MongoDB using Mongoose
+                // Logic to retrieve a single contact by firstName
+                return context.db.collection('contacts').findOne({ firstName: args.firstName });
             }
         },
         contacts: {
             type: new GraphQLList(ContactType),
             resolve(parent, args, context) {
-                // Logic to retrieve all contacts from MongoDB using Mongoose
-                return context.db.collection('contacts').find().toArray(); // Example assuming 'contacts' is your MongoDB collection
+                // Logic to retrieve all contacts from MongoDB
+                return context.db.collection('contacts').find().toArray();
             }
         }
     }
@@ -55,13 +54,13 @@ const Mutation = new GraphQLObjectType({
             args: {
                 firstName: { type: new GraphQLNonNull(GraphQLString) },
                 lastName: { type: new GraphQLNonNull(GraphQLString) },
-                email: { type:new GraphQLNonNull(GraphQLString) },
-                favoriteColor: { type:new GraphQLNonNull(GraphQLString) },
-                birthday: { type:new GraphQLNonNull(GraphQLString) }
+                email: { type: new GraphQLNonNull(GraphQLString) },
+                favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
+                birthday: { type: new GraphQLNonNull(GraphQLString) }
             },
             resolve(parent, args, context) {
-                // Your logic to add a new contact to the database
-                // This could involve creating a new document in MongoDB using Mongoose
+                // Logic to add a new contact to the database
+                return context.db.collection('contacts').insertOne(args).then(result => result.ops[0]);
             }
         },
         updateContact: {
@@ -75,21 +74,33 @@ const Mutation = new GraphQLObjectType({
                 birthday: { type: GraphQLString }
             },
             resolve(parent, args, context) {
+                // Your logic to update an existing contact in the database
+                // Use ObjectId for the id field
                 const { db } = context;
                 const { _id, ...updateFields } = args;
-
-                // Convert the _id argument to ObjectId
-                const objectId = new ObjectId(_id);
-
                 return db.collection('contacts').updateOne(
-                    { _id: objectId },
+                    { _id: ObjectId(_id) },
                     { $set: updateFields }
                 ).then(() => {
                     // Return the updated contact
-                    return db.collection('contacts').findOne({ _id: objectId });
+                    return db.collection('contacts').findOne({ _id: ObjectId(_id) });
                 }).catch(err => {
                     throw new Error('Failed to update contact');
                 });
+            }
+
+
+
+            
+        },
+        deleteContact: {
+            type: ContactType,
+            args: {
+                _id: { type: new GraphQLNonNull(GraphQLString) }
+            },
+            resolve(parent, args, context) {
+                // Logic to delete a contact from the database
+                return context.db.collection('contacts').findOneAndDelete({ _id: ObjectId(args._id) }).then(result => result.value);
             }
         }
     }
