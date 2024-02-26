@@ -11,6 +11,19 @@ const {
 const { ObjectId } = require('mongodb'); // Import ObjectId from MongoDB package
 const Contact = require('./models/contacts'); // Adjust the import path as per your project structure
 
+// Define Contact input type
+const ContactInputType = new GraphQLInputObjectType({
+    name: 'ContactInput',
+    fields: () => ({
+        _id: { type: new GraphQLNonNull(GraphQLString) },
+        firstName: { type: new GraphQLNonNull(GraphQLString) },
+        lastName: { type: new GraphQLNonNull(GraphQLString) },
+        email: { type: new GraphQLNonNull(GraphQLString) },
+        favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
+        birthday: { type: new GraphQLNonNull(GraphQLString) }
+    })
+});
+
 // Define Contact type
 const ContactType = new GraphQLObjectType({
     name: 'Contact',
@@ -93,19 +106,6 @@ const Mutation = new GraphQLObjectType({
             }
         }
     }
-});
-
-// Define Contact input type
-const ContactInputType = new GraphQLInputObjectType({
-    name: 'ContactInput',
-    fields: () => ({
-        _id: { type: new GraphQLNonNull(GraphQLString) },
-        firstName: { type: new GraphQLNonNull(GraphQLString) },
-        lastName: { type: new GraphQLNonNull(GraphQLString) },
-        email: { type: new GraphQLNonNull(GraphQLString) },
-        favoriteColor: { type: new GraphQLNonNull(GraphQLString) },
-        birthday: { type: new GraphQLNonNull(GraphQLString) }
-    })
 });
 
 module.exports = new GraphQLSchema({
