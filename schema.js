@@ -75,16 +75,18 @@ const Mutation = new GraphQLObjectType({
                 birthday: { type: GraphQLString }
             },
             resolve(parent, args, context) {
-                // Your logic to update an existing contact in the database
-                // Use ObjectId for the id field
                 const { db } = context;
                 const { _id, ...updateFields } = args;
+
+                // Convert the _id argument to ObjectId
+                const objectId = new ObjectId(_id);
+
                 return db.collection('contacts').updateOne(
-                    { _id: ObjectId(_id) },
+                    { _id: objectId },
                     { $set: updateFields }
                 ).then(() => {
                     // Return the updated contact
-                    return db.collection('contacts').findOne({ _id: ObjectId(_id) });
+                    return db.collection('contacts').findOne({ _id: objectId });
                 }).catch(err => {
                     throw new Error('Failed to update contact');
                 });
